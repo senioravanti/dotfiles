@@ -4,11 +4,14 @@
 # dot config --local status.showUntrackedFiles no
 # git clone --bare <remote-git-repo-url> $HOME/.dotfiles 
 # dot checkout
+# dot add -f ./
+# dot config --local core.excludesFile <path to your gitignore>
 # https://gist.github.com/ennanco/d1c6a228f5aac23a3af6592135f0f8ae
 # https://coffeeaddict.dev/how-to-manage-dotfiles-with-git-bare-repo/
 dot() {
   git --git-dir="$HOME/.dotfiles" \
-    --work-tree="$HOME/.config" "$@"
+    --work-tree="$HOME/.config" \
+    "$@"
 }
 
 pswdgen() {
