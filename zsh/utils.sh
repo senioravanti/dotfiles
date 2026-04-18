@@ -7,8 +7,8 @@
 # https://gist.github.com/ennanco/d1c6a228f5aac23a3af6592135f0f8ae
 # https://coffeeaddict.dev/how-to-manage-dotfiles-with-git-bare-repo/
 dot() {
-  git --git-dir="$HOME/.dotfiles" \
-    --work-tree="$HOME/.config" \
+  git --git-dir="${DOT_REPO:-${HOME}/.dotfiles}" \
+    --work-tree="${DOT_DATA:-${HOME}/.config}" \
     "$@"
 }
 
