@@ -1,0 +1,159 @@
+{
+  "session": {
+    "trust_all_worktrees": true
+  },
+  "agent_servers": {
+    "opencode": {
+      "type": "registry"
+    }
+  },
+  "icon_theme": "JetBrains New UI Icons (Dark)",
+  "edit_predictions": {
+    "provider": "none"
+  },
+  "ssh_connections": [
+    {
+      "host": "192.168.0.144",
+      "username": "senioravanti",
+      "args": [],
+      "projects": [
+        {
+          "paths": [
+            "/home/senioravanti/deploy"
+          ]
+        },
+        {
+          "paths": [
+            "/home/senioravanti/devops/./"
+          ]
+        },
+        {
+          "paths": [
+            "/home/senioravanti/forgejo/./"
+          ]
+        },
+        {
+          "paths": [
+            "/home/senioravanti/immich/./"
+          ]
+        }
+      ]
+    },
+    {
+      "host": "senioravanti.ru",
+      "args": [],
+      "projects": [
+        {
+          "paths": [
+            "/home/senioravanti/helpdesk/deployment/./"
+          ]
+        }
+      ]
+    }
+  ],
+  "auto_update_extensions": {
+    "html": false
+  },
+  "vim_mode": true,
+  "file_scan_exclusions": [
+    "go.sum",
+    "**.git",
+    ".DS_Store"
+  ],
+  "project_panel": {
+    "indent_guides": {
+      "show": "never"
+    },
+    "auto_fold_dirs": false,
+    "file_icons": true,
+    "dock": "right",
+    "button": true
+  },
+  "inline_code_actions": false,
+  "agent": { "dock": "left", "enable_feedback": false, "button": true },
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false
+  },
+  "node": {
+    "npm_path": "pnpm"
+  },
+  "soft_wrap": "none",
+  "autosave": {
+    "after_delay": {
+      "milliseconds": 1000
+    }
+  },
+  "relative_line_numbers": "enabled",
+  "disable_ai": true,
+  "buffer_font_fallbacks": [".ZedMono"],
+  "buffer_font_family": "JetBrains Mono",
+  "tab_size": 2,
+  "base_keymap": "VSCode",
+  "ui_font_size": 16,
+  "buffer_font_size": 16.0,
+  "outline_panel": {
+    "indent_guides": {
+      "show": "never"
+    },
+    "button": true
+  },
+  "collaboration_panel": { "button": false },
+  "git_panel": { "status_style": "icon", "dock": "right", "button": true },
+  "theme": {
+    "mode": "dark",
+    "light": "One Light",
+    "dark": "VSCode Dark Modern"
+  },
+  "title_bar": {
+    "show_branch_icon": false,
+    "show_branch_name": true,
+    "show_project_items": false,
+    "show_onboarding_banner": false,
+    "show_user_picture": false,
+    "show_sign_in": false,
+    "show_menus": false
+  },
+  "status_bar": {
+    "active_language_button": true,
+    "cursor_position_button": false,
+    "line_endings_button": true
+  },
+  "diagnostics": {
+    "inline": {
+      "enabled": true,
+      "max_severity": "warning"
+    },
+    "button": true
+  },
+  "debugger": { "button": false },
+  "search": { "button": false },
+  "lsp": {
+    "tailwindcss-language-server": {
+      "settings": {
+        "includeLanguages": {
+          "templ": "html"
+        },
+        "experimental": {
+          "classRegex": ["class=\"([^\"]*)\"", "className=\"([^\"]*)\""]
+        }
+      }
+    }
+  },
+  "languages": {
+    "Plain Text": {
+      "soft_wrap": "editor_width"
+    }
+  },
+  "global_lsp_settings": {
+    "button": false
+  },
+  "terminal": {
+    "toolbar": {
+      "breadcrumbs": false
+    },
+    "shell": {
+      "program": "C:\\Program Files\\Git\\bin\\bash.exe"
+    },
+  }
+}
