@@ -1,58 +1,21 @@
+# Конфигурация инструментов и утилиты
+
+## Zed
+
+Пример конфигурации
+
+```json
 {
   "session": {
     "trust_all_worktrees": true
-  },
-  "agent_servers": {
-    "opencode": {
-      "type": "registry"
-    }
   },
   "icon_theme": "JetBrains New UI Icons (Dark)",
   "edit_predictions": {
     "provider": "none"
   },
-  "ssh_connections": [
-    {
-      "host": "192.168.0.144",
-      "username": "senioravanti",
-      "args": [],
-      "projects": [
-        {
-          "paths": [
-            "/home/senioravanti/deploy"
-          ]
-        },
-        {
-          "paths": [
-            "/home/senioravanti/devops/./"
-          ]
-        },
-        {
-          "paths": [
-            "/home/senioravanti/forgejo/./"
-          ]
-        },
-        {
-          "paths": [
-            "/home/senioravanti/immich/./"
-          ]
-        }
-      ]
-    },
-    {
-      "host": "senioravanti.ru",
-      "args": [],
-      "projects": [
-        {
-          "paths": [
-            "/home/senioravanti/helpdesk/deployment/./"
-          ]
-        }
-      ]
-    }
-  ],
   "auto_update_extensions": {
-    "html": false
+    "html": false,
+    "templ": false,
   },
   "vim_mode": true,
   "file_scan_exclusions": [
@@ -152,8 +115,6 @@
     "toolbar": {
       "breadcrumbs": false
     },
-    "shell": {
-      "program": "C:\\Program Files\\Git\\bin\\bash.exe"
-    },
   }
 }
+```
