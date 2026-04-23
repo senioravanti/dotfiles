@@ -54,3 +54,19 @@ open-goland() {
   fi
   echo "\`$1\` is not a directory"
 }
+
+prettify() {
+  printf '%s' "$1" \
+    | sed -E ':a;N;$!ba;s/\r//g' \
+    | sed -E 's/[\x00-\x1F]//g' \
+    | jq
+}
+
+# https://gist.github.com/thomasdarimont/46358bc8167fce059d83a1ebdb92b0e7
+decode_jwt() {
+  echo -n "$1" \
+    | cut -d '.' -f 2 \
+    | tr '_-' '/+' \
+    | base64 -d | jq
+}
+
