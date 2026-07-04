@@ -20,6 +20,7 @@ genpswd() {
   head -c "${1:-16}" /dev/urandom | ascii85 | tr -d '<~>' | sed -e '$a\'
 }
 
+# mvn-project ~/Development/jvm/drafts imvconv
 mvn-project() {
   if [ ! -d "$1" ]; then
     echo 'project dir does not exist'
@@ -30,13 +31,22 @@ mvn-project() {
     return
   fi
 
+  old=$(pwd)
   cd "$1"
   mvn archetype:generate \
     -DgroupId=ru.senioravanti \
     -DartifactId="$2" \
     -DarchetypeArtifactId=maven-archetype-quickstart \
+    -DjavaCompilerVersion=25 \
+    -DarchetypeVersion=1.5 \
     -DinteractiveMode=false
-  cd -
+  cd "./$2"
+  rm -rf ./.mvn
+  git init
+  git branch -m main
+  curl -sSLo ./.gitignore https://raw.githubusercontent.com/github/gitignore/refs/heads/main/Global/JetBrains.gitignore
+  echo '.env*' >> './.gitignore'
+  cd "${old}"
 }
 
 open-idea() {
@@ -69,4 +79,3 @@ decode_jwt() {
     | tr '_-' '/+' \
     | base64 -d | jq
 }
-
