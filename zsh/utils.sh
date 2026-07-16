@@ -34,18 +34,25 @@ mvn-project() {
   old=$(pwd)
   cd "$1"
   mvn archetype:generate \
+    -DarchetypeCatalog=local \
     -DgroupId=ru.senioravanti \
     -DartifactId="$2" \
-    -DarchetypeArtifactId=maven-archetype-quickstart \
-    -DjavaCompilerVersion=25 \
-    -DarchetypeVersion=1.5 \
+    -Dversion=1.0.0 \
+    -DarchetypeGroupId=ru.senioravanti \
+    -DarchetypeArtifactId=archetype \
+    -DarchetypeVersion=1.0.0 \
     -DinteractiveMode=false
+  if [ "$?" -ne 0 ]; then
+    cd -
+    rm -r "./$2"
+    return
+  fi
   cd "./$2"
   rm -rf ./.mvn
   git init
   git branch -m main
-  curl -sSLo ./.gitignore https://raw.githubusercontent.com/github/gitignore/refs/heads/main/Global/JetBrains.gitignore
-  echo '.env*' >> './.gitignore'
+  git add .
+  git commit -m 'chore: init repo'
   cd "${old}"
 }
 
