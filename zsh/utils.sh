@@ -15,18 +15,46 @@ dot() {
 # sudo apt update && sudo apt install -y ruby-ascii85
 # или openssl rand -base64 $1 | tr -d '=' | tr '+/' '-_'
 # несколько паролей `for i in {1..${n:-10}}; do genpswd; done`
-# 5 ascii символов для представления 4 байт, то есть пароль будет на 25% длинее запрощенного числа байт 
+# 5 ascii символов для представления 4 байт, то есть пароль будет на 25% длинее запрощенного числа байт
 genpswd() {
   head -c "${1:-16}" /dev/urandom | ascii85 | tr -d '<~>' | sed -e '$a\'
 }
 
+# https://stackoverflow.com/questions/192249/how-do-i-parse-command-line-arguments-in-bash
 # mvn-project ~/Development/jvm/drafts imvconv
 mvn-project() {
+  group_id="ru.senioravanti"
+
+  # парсим опции
+  POSITIONAL_ARGS=()
+
+  while [[ $# -gt 0 ]]; do
+    case $1 in
+      -G|--group)
+        group_id="$2"
+        shift # past argument
+        shift # past value
+        ;;
+      -*|--*)
+        echo "Unknown option \`$1\`"
+        return 1
+        ;;
+      *)
+        POSITIONAL_ARGS+=("$1") # save positional arg
+        shift # past argument
+        ;;
+    esac
+  done
+
+  set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
+
+  # парсим позиционные параметры
   if [ ! -d "$1" ]; then
     echo 'project dir does not exist'
     return
   fi
-  if [ -z "$2" ]; then
+  artifact_id="${2#./}"
+  if [ -z "${artifact_id}" ]; then
     echo 'artifact id is empty'
     return
   fi
@@ -35,8 +63,8 @@ mvn-project() {
   cd "$1"
   mvn archetype:generate \
     -DarchetypeCatalog=local \
-    -DgroupId=ru.senioravanti \
-    -DartifactId="$2" \
+    -DgroupId="${group_id}" \
+    -DartifactId="${artifact_id}" \
     -Dversion=1.0.0 \
     -DarchetypeGroupId=ru.senioravanti \
     -DarchetypeArtifactId=archetype \
