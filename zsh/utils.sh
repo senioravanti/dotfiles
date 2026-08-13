@@ -1,3 +1,4 @@
+# https://www.gnu.org/software/bash/manual/bash.html
 # git init --bare $HOME/.dotfiles
 # dot config --local status.showUntrackedFiles no
 # git clone --bare <remote-git-repo-url> $HOME/.dotfiles
@@ -113,4 +114,65 @@ decode_jwt() {
     | cut -d '.' -f 2 \
     | tr '_-' '/+' \
     | base64 -d | jq
+}
+
+# https://stackoverflow.com/a/73587479
+# https://github.blog/open-source/git/bring-your-monorepo-down-to-size-with-sparse-checkout/
+# MSYS_NO_PATHCONV=1 git-fetch-subdir -b main-v2  https://git.deuxfleurs.fr/Deuxfleurs/garage.git ./garage script/k8s/
+git-fetch-subdir() {
+  local branch=main
+
+  POSITIONAL_ARGS=()
+  while [[ $# -gt 0 ]]; do
+    case $1 in
+      -b|--branch)
+        branch="$2"
+        shift # past argument
+        shift # past value
+        ;;
+      -*|--*)
+        echo "Unknown option \`$1\`"
+        return 1
+        ;;
+      *)
+        POSITIONAL_ARGS+=("$1") # save positional arg
+        shift # past argument
+        ;;
+    esac
+  done
+  set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
+
+  if [[ $# -lt 3 ]]; then
+    echo "args count $# < 3"
+    return
+  fi
+  local url="$1"
+  local dir="$2"
+  shift 2
+  local sub_dirs=("$@")
+
+  # echo "url=${url}"
+  # echo "dir=${dir}"
+  # echo "branch=${branch}"
+  # echo "sub_dirs=${sub_dirs}"
+  git clone --depth=1 --single-branch \
+    --filter=tree:0 --no-checkout \
+    -b "${branch}" "${url}" "${dir}" \
+  || {
+    echo "failed to clone"
+    return 1
+  }
+  (
+    cd "${dir}"
+    git config core.sparseCheckout true
+    echo '!/*/' > .git/info/sparse-checkout
+    for sub_dir in "${sub_dirs[@]}"; do
+      echo "${sub_dir}" >> .git/info/sparse-checkout
+    done
+    git sparse-checkout list
+    git checkout --ignore-other-worktrees "${branch}"
+  ) || {
+    echo "failed to sparse checkout"
+    return 1
+  }
 }
