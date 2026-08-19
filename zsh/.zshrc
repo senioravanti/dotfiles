@@ -19,6 +19,7 @@ export PATH="$PATH:${HOME}/.local/bin:${HOME}/go/bin:${HOME}/syncthing:${HOME}/j
 export GOPATH="$HOME/go"
 
 export GRAALVM_HOME="${HOME}/.sdkman/candidates/java/25.0.2-graalce/"
+export SYSTEMD_EDITOR=nvim
 
 export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
