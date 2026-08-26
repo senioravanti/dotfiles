@@ -127,8 +127,7 @@ git-fetch-subdir() {
     case $1 in
       -b|--branch)
         branch="$2"
-        shift # past argument
-        shift # past value
+        shift 2
         ;;
       -*|--*)
         echo "Unknown option \`$1\`"
@@ -176,3 +175,26 @@ git-fetch-subdir() {
     return 1
   }
 }
+
+docker-build-env() {
+	docker -v > /dev/null
+	if [[ $? -ne 0 ]]; then
+		echo "The program 'docker' is not installed."
+		return
+	fi
+	local env_file
+	while (("$#")); do
+    if [[ "$1" = '--build-arg-env' ]]; then
+				env_file="$2"
+        shift 2
+				break
+		fi
+  done
+	docker build $(cat "${env_file}" | sed 's@^@--build-arg @g' | paste -s -d " ") $@
+}
+
+jshell-classpath() {
+	CLASSPATH=$(mvn dependency:build-classpath -DincludeTypes=jar -Dmdep.outputFile=/dev/stderr 2>&1 >/dev/null):target/classes \
+		jshell
+}
+
