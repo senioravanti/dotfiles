@@ -10,8 +10,6 @@ zmodload -i zsh/complist
 . "${XDG_CONFIG_HOME}/zsh/keybindings.sh"
 . "${XDG_CONFIG_HOME}/zsh/prompt.sh"
 
-___MY_VMOPTIONS_SHELL_FILE="${HOME}/.jetbrains.vmoptions.sh"; if [ -f "${___MY_VMOPTIONS_SHELL_FILE}" ]; then . "${___MY_VMOPTIONS_SHELL_FILE}"; fi
-
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 

@@ -198,3 +198,19 @@ jshell-classpath() {
 		jshell
 }
 
+
+get-env() {
+	if [[ $# -ne 2 ]]; then
+	fi
+	if [[ ! -f "$1" ]]; then
+		echo "'$1' is not a file"
+		return 1
+	fi
+	while IFS='=' read -r key value; do
+		if [[ "${key}" = "$2" ]]; then
+			echo "${value}"
+			return 0
+		fi
+	done < "$1"
+}
+
