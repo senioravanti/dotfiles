@@ -176,3 +176,53 @@ git-fetch-subdir() {
     return 1
   }
 }
+
+# https://www.dbi-services.com/blog/guide-to-install-and-use-pgformatter-on-linux-opensuse/
+pg-format-helper() {
+	local version='5.10'
+	if ! command -v pg_format > /dev/null 2>&1; then
+		echo "installing 'pg_format' ..."
+		if ! command -v perl > /dev/null 2>&1; then
+			echo "please install 'perl' to continue"
+			return 1
+		fi
+		local build_dir="/tmp/pgFormatter-${version}/"
+		local old_pwd="$(pwd)"
+		mkdir "${build_dir}"
+		cd "${build_dir}"
+		curl -LO "https://github.com/darold/pgFormatter/archive/refs/tags/v${version}.tar.gz"
+		tar xzf "v${version}.tar.gz"
+		cd pgFormatter-${version}/
+		perl Makefile.PL
+		make && sudo make install
+		cd "${old_pwd}"
+		rm -rf "${build_dir}"
+		pg_format --version
+		echo "'pg_format' successfully installed"
+	fi
+	local raw_sql
+	if [[ -p /dev/stdin ]]; then
+		raw_sql="$(cat)"
+	else
+		for it in "$@"; do
+			if [[ -f "${it}" ]]; then
+				raw_sql+="$(cat "${it}")"
+			else
+				raw_sql+="${it}"
+			fi
+			# https://www.gnu.org/software/bash/manual/html_node/ANSI_002dC-Quoting.html
+			raw_sql+=$'\n'
+		done
+	fi
+	echo "${raw_sql}" | tr -d '\\' | pg_format
+}
+
+# https://gist.github.com/robin-a-meade/14a279d28abdfb0526307ccb2c9b2381/137f78c90cfaaee16f2c3e3f24886fd1c06e8a51
+copy-osc52() {
+	printf '\e]52;c;'
+	# Options used:
+	#   -w0 disables line wrapping
+	base64 -w0 <"${@:-/dev/stdin}"
+	printf '\e\\'
+}
+
