@@ -86,11 +86,18 @@ mvn-project() {
 }
 
 open-idea() {
+	local command=idea
+	if ! idea --version > /dev/null 2>&1; then
+		command=idea64
+		if ! idea64 --version > /dev/null 2>&1; then
+			echo "IntelliJ IDEA runner not in PATH"
+		fi
+	fi
   if [ ! -d "$1" ]; then
     echo "\`$1\` is not a directory"
     return
   fi
-  nohup idea "$1" 2>&1 > /dev/null &
+  nohup "${command}" "$1" 2>&1 > /dev/null &
 }
 
 open-goland() {
@@ -252,5 +259,20 @@ pg-format-helper() {
 		done
 	fi
 	echo "${raw_sql}" | tr -d '\\' | pg_format
+}
+
+# https://gist.github.com/robin-a-meade/14a279d28abdfb0526307ccb2c9b2381/137f78c90cfaaee16f2c3e3f24886fd1c06e8a51
+copy-osc52() {
+	local data
+
+	if (($# == 0)); then
+		data=$(base64 -w0)
+	elif [[ -f "$1" ]]; then
+		data=$(base64 -w0 < "$1")
+	else
+		data=$(printf '%s' "$*" | base64 -w0)
+	fi
+
+	printf '\e]52;c;%s\e\\' "$data"
 }
 
