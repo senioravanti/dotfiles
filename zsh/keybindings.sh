@@ -1,4 +1,2 @@
-#!/usr/bin/env zsh
-
-bindkey -e
-bindkey \^u backward-kill-line
+bindkey '^A' beginning-of-line
+bindkey '^E' end-of-line

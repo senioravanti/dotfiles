@@ -18,7 +18,24 @@ dot() {
 # несколько паролей `for i in {1..${n:-10}}; do genpswd; done`
 # 5 ascii символов для представления 4 байт, то есть пароль будет на 25% длинее запрощенного числа байт
 genpswd() {
-  head -c "${1:-16}" /dev/urandom | ascii85 | tr -d '<~>' | sed -e '$a\'
+	local len="${1:-16}"
+	if ! [[ "${len}" =~ '^[0-9]{1,5}$' ]]; then
+		echo "'${len}' -> invalid password length"
+		return
+	fi
+	local cmd="head -c ${len} /dev/urandom | basenc"
+	case "$2" in
+		b16|base16)
+			cmd+=" --base16"
+			;;
+		b85|ascii85|base85)
+			cmd+=" --z85"
+			;;
+		*)
+			cmd+=" --base64url | tr -d '='"
+			;;
+	esac
+	echo `eval "${cmd}"`
 }
 
 # https://stackoverflow.com/questions/192249/how-do-i-parse-command-line-arguments-in-bash
@@ -177,6 +194,43 @@ git-fetch-subdir() {
   }
 }
 
+docker-build-env() {
+	docker -v > /dev/null
+	if [[ $? -ne 0 ]]; then
+		echo "The program 'docker' is not installed."
+		return
+	fi
+	local env_file
+	while (("$#")); do
+    if [[ "$1" = '--build-arg-env' ]]; then
+				env_file="$2"
+        shift 2
+				break
+		fi
+  done
+	docker build $(cat "${env_file}" | sed 's@^@--build-arg @g' | paste -s -d " ") $@
+}
+
+jshell-classpath() {
+	CLASSPATH=$(mvn dependency:build-classpath -DincludeTypes=jar -Dmdep.outputFile=/dev/stderr 2>&1 >/dev/null):target/classes \
+		jshell
+}
+
+get-env() {
+	if [[ $# -ne 2 ]]; then
+	fi
+	if [[ ! -f "$1" ]]; then
+		echo "'$1' is not a file"
+		return 1
+	fi
+	while IFS='=' read -r key value; do
+		if [[ "${key}" = "$2" ]]; then
+			echo "${value}"
+			return 0
+		fi
+	done < "$1"
+}
+
 # https://www.dbi-services.com/blog/guide-to-install-and-use-pgformatter-on-linux-opensuse/
 pg-format-helper() {
 	local version='5.10'
@@ -224,5 +278,14 @@ copy-osc52() {
 	#   -w0 disables line wrapping
 	base64 -w0 <"${@:-/dev/stdin}"
 	printf '\e\\'
+}
+
+dockersize() {
+	docker manifest inspect -v "$1" \
+		| jq -c 'if type == "array" then .[] else . end' \
+		| jq -r '[ ( .Descriptor.platform | [ .os, .architecture, .variant, ."os.version" ] | del(..|nulls) | join("/") ), ( [ ( .OCIManifest // .SchemaV2Manifest ).layers[].size ] | add ) ] | join(" ")' \
+		| numfmt --to iec --format '%.2f' --field 2 \
+		| sort \
+		| column -t
 }
 

@@ -1,5 +1,3 @@
-#!/usr/bin/env zsh
-
 alias gs='git status'
 alias ga='git add'
 alias gp='git push'
@@ -17,3 +15,5 @@ alias gr='git remote'
 alias grs='git remote show'
 alias glo='git log --pretty="oneline"'
 alias glol='git log --graph --oneline --decorate'
+alias gconf="git --git-dir=${HOME}/.dotfiles --work-tree=$XDG_CONFIG_HOME"
+

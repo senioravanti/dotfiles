@@ -1,0 +1,5 @@
+* text=auto
+
+# Treat all files as non-executable unless specified
+*.sh    eol=lf
+
