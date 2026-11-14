@@ -276,3 +276,51 @@ copy-osc52() {
 	printf '\e]52;c;%s\e\\' "$data"
 }
 
+docker-fetch-tags() {
+  if [[ $# -eq 1 ]]; then
+    echo "no args"
+    return 1
+	fi
+
+	local page_size=25
+
+	POSITIONAL_ARGS=()
+  while [[ $# -gt 0 ]]; do
+    case $1 in
+      -p|--page-size)
+        page_size="$2"
+        shift 2
+        ;;
+      -*|--*)
+        echo "Unknown option \`$1\`"
+        return 1
+        ;;
+      *)
+        POSITIONAL_ARGS+=("$1") # save positional arg
+        shift # past argument
+        ;;
+    esac
+  done
+  set -- "${POSITIONAL_ARGS[@]}" 
+
+	if [[ -z "$1" ]]; then
+		echo 'Usage: docker-fetch-tags <image>'
+		echo 'docker-fetch-tags postgres'
+		return 1
+	fi
+
+	local img="$1"
+	local namespace='library'
+	local repo="$1"
+
+	if [[ "${img}" == */* ]]; then
+		# Для сценария grafana/loki/super
+		# % -> grafana/loki
+		# %% -> grafana :: longest matching pattern detected
+		namespace="${img%%/*}"
+		repo="${img#*/}"
+	fi
+	curl -sS "https://hub.docker.com/v2/namespaces/${namespace}/repositories/${repo}/tags?page_size=${page_size}" \
+		| jq -r '.results[].name'
+}
+
